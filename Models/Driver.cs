@@ -1,0 +1,26 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace CCAPI.Models
+{
+    public class Driver
+    {
+        [Key]
+        public int ID { get; set; }
+
+        [Column("Name")]
+        public string FirstName { get; set; } = string.Empty;
+
+        [Column("Surname")]
+        public string LastName { get; set; } = string.Empty;
+
+        [Column("LicenceNum")]
+        public string LicenseNumber { get; set; } = string.Empty;
+
+        [Column("Phone")]
+        public string PhoneNumber { get; set; } = string.Empty;
+
+        // Отношение "один ко многим" с Транспортными средствами
+        public ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
+    }
+}
