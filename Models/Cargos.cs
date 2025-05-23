@@ -20,8 +20,9 @@ namespace CCAPI.Models
         [Column("Descriptions")]
         public string Descriptions { get; set; } = string.Empty;
         // Отношение "один ко многим" с Перевозками
-        public ICollection<Transportation> Transportations { get; set; } = new List<Transportation>();
 
         public Orders Order { get; set; } = null!;
+        [InverseProperty("Load")]
+        public ICollection<Transportation> Transportations { get; set; } = new List<Transportation>();
     }
 }

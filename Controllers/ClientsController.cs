@@ -17,6 +17,7 @@ namespace CCAPI.Controllers
         }
 
         // GET: api/clients
+    
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

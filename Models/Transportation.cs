@@ -1,17 +1,25 @@
-﻿using CCAPI.Models;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-public class Transportation
+namespace CCAPI.Models
 {
-    public string ActiveVehicle { get; set; } = string.Empty;
+    public class Transportation
+    {
+        [Key]
+        [Column("ActiveVehicle")]
+        public int ActiveVehicle { get; set; } // Теперь это первичный ключ
 
-    [ForeignKey("Cargos")]
-    public int CargoID { get; set; }
+        [Column("CargoID")]
+        public int CargoID { get; set; }
 
-    public Cargos Load { get; set; } = null!;
+        [Column("VehicleID")]
+        public int VehicleID { get; set; }
 
-    [ForeignKey("Vehicle")]
-    public int VehicleId { get; set; }
+        // Навигационные свойства
+        [ForeignKey("CargoID")]
+        public Cargos? Load { get; set; }
 
-    public Vehicle Vehicle { get; set; } = null!;
+        [ForeignKey("VehicleID")]
+        public Vehicle? Vehicle { get; set; }
+    }
 }

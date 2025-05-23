@@ -20,7 +20,7 @@ namespace CCAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var transportations = await _context.Shipping.ToListAsync();
+            var transportations = await _context.Transportations.ToListAsync();
             return Ok(transportations);
         }
 
@@ -28,7 +28,7 @@ namespace CCAPI.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var transportation = await _context.Shipping.FindAsync(id);
+            var transportation = await _context.Transportations.FindAsync(id);
 
             if (transportation == null)
                 return NotFound();
@@ -43,25 +43,17 @@ namespace CCAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            // Загружаем груз и транспорт из БД по ID
-            var cargo = await _context.Cargo.FindAsync(dto.LoadId);
-            var vehicle = await _context.Vehicles.FindAsync(dto.VehicleId);
-
-            if (cargo == null || vehicle == null)
-                return BadRequest("Неверный LoadId или VehicleId");
-
             var transportation = new Transportation
             {
+                ActiveVehicle = dto.ActiveVehicle,
                 CargoID = dto.LoadId,
-                Load = cargo,
-                VehicleId = dto.VehicleId,
-                Vehicle = vehicle
+                VehicleID = dto.VehicleId
             };
 
-            _context.Shipping.Add(transportation);
+            _context.Transportations.Add(transportation);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById), new { id = transportation.CargoID }, transportation);
+            return CreatedAtAction(nameof(GetById), new { id = transportation.ActiveVehicle }, transportation);
         }
 
         // PUT: api/transportations/{id}
@@ -71,23 +63,15 @@ namespace CCAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var existing = await _context.Shipping.FindAsync(id);
+            var existing = await _context.Transportations.FindAsync(id);
 
             if (existing == null)
                 return NotFound();
 
-            var cargo = await _context.Cargo.FindAsync(dto.LoadId);
-            var vehicle = await _context.Vehicles.FindAsync(dto.VehicleId);
-
-            if (cargo == null || vehicle == null)
-                return BadRequest("Неверный LoadId или VehicleId");
-
             existing.CargoID = dto.LoadId;
-            existing.Load = cargo;
-            existing.VehicleId = dto.VehicleId;
-            existing.Vehicle = vehicle;
+            existing.VehicleID = dto.VehicleId;
 
-            _context.Shipping.Update(existing);
+            _context.Transportations.Update(existing);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -97,12 +81,12 @@ namespace CCAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var transportation = await _context.Shipping.FindAsync(id);
+            var transportation = await _context.Transportations.FindAsync(id);
 
             if (transportation == null)
                 return NotFound();
 
-            _context.Shipping.Remove(transportation);
+            _context.Transportations.Remove(transportation);
             await _context.SaveChangesAsync();
 
             return NoContent();

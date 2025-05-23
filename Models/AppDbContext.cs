@@ -11,28 +11,40 @@ namespace CCAPI.Models
         public DbSet<Client> Clients { get; set; } = null!;
         public DbSet<Orders> Order { get; set; } = null!;
         public DbSet<Cargos> Cargo { get; set; } = null!;
-        public DbSet<Transportation> Shipping { get; set; } = null!;
+        public DbSet<Transportation> Transportations { get; set; } = null!;
         public DbSet<Vehicle> Vehicles { get; set; } = null!;
         public DbSet<Driver> Drivers { get; set; } = null!;
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Пример конфигурации отношения многие-ко-многим между Заказами и Перевозками
-            modelBuilder.Entity<Transportation>()
-                .HasKey(t => new { t.Load, t.VehicleId });
+            // Связь Orders <-> Client
+            modelBuilder.Entity<Orders>()
+                .HasOne(o => o.Client)
+                .WithMany(c => c.Orders)
+                .HasForeignKey(o => o.IDClient);
 
-            modelBuilder.Entity<Transportation>()
-                .HasOne(t => t.Load)
-                .WithMany(l => l.Transportations)
-                .HasForeignKey(t => t.Load);
+            // Связь Cargos <-> Orders
+            modelBuilder.Entity<Cargos>()
+                .HasOne(c => c.Order)
+                .WithMany(o => o.Cargos)
+                .HasForeignKey(c => c.OrderId);
 
+            // 🔥 Связь Transportation -> Cargos
             modelBuilder.Entity<Transportation>()
-                .HasOne(t => t.Vehicle)
-                .WithMany(v => v.Transportations)
-                .HasForeignKey(t => t.VehicleId);
+                .HasOne<Vehicle>(t => t.Vehicle)       // Навигация к транспорту
+                .WithMany()                             // Без обратной коллекции
+                .HasForeignKey(t => t.VehicleID);      // Через поле VehicleID
 
-            // Другие конфигурации отношений можно добавить здесь
+            // Связь Transportation -> Cargos
+            modelBuilder.Entity<Transportation>()
+                .HasOne<Cargos>(t => t.Load)            // Навигация к грузу
+                .WithMany()                              // Без обратной связи
+                .HasForeignKey(t => t.CargoID);
+
+            base.OnModelCreating(modelBuilder);
         }
+
     }
+    
 }
