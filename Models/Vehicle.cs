@@ -20,10 +20,8 @@ namespace CCAPI.Models
         [Column("VehicleNum")]
         public string VehicleNum { get; set; } = string.Empty;
 
-        // Отношение "один ко многим" с Перевозками
         public ICollection<Transportation> Transportations { get; set; } = new List<Transportation>();
 
-        // Отношение "один ко многому" с Водителями
         public Driver Driver { get; set; } = null!;
     }
 }

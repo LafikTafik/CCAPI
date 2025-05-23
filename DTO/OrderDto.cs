@@ -1,10 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CCAPI.Models;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace CCAPI.Models
+namespace CCAPI.DTO
 {
-    [Table("Order")]
-    public class Orders
+    public class OrderDto
     {
         [Key]
         public int ID { get; set; }
@@ -16,14 +21,10 @@ namespace CCAPI.Models
         public DateTime? Date { get; set; }
 
         [Column("Status")]
-        public string? Status { get; set; }
+        public string Status { get; set; } = string.Empty;
 
         [Column("Price")]
         public decimal? Price { get; set; }
-
-    
-        public Client? Client { get; set; }
-        public ICollection<Cargos>? Cargos { get; set; }
 
     }
 }

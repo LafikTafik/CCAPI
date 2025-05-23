@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CCAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using CCAPI.DTO;
 
 namespace CCAPI.Controllers
 {
@@ -36,13 +37,7 @@ namespace CCAPI.Controllers
         }
 
         // POST: api/orders
-        public class OrderDto
-        {
-            public int IDClient { get; set; }
-            public string Status { get; set; } = string.Empty;
-            public decimal Price { get; set; }
-            public DateTime Date { get; set; }
-        }
+        
         [HttpPost]
         public async Task<IActionResult> Create(OrderDto orderDto)
         {

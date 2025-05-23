@@ -20,7 +20,7 @@ namespace CCAPI.Models
         [Column("Phone")]
         public string PhoneNumber { get; set; } = string.Empty;
 
-        // Отношение "один ко многим" с Транспортными средствами
+     
         public ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
     }
 }

@@ -1,12 +1,17 @@
-﻿namespace CCAPI.Models
-{
-    public class Transportation
-    {
-        public int LoadId { get; set; }
-        public int VehicleId { get; set; }
+﻿using CCAPI.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
-        // Навигационные свойства
-        public Cargos Load { get; set; } = null!;
-        public Vehicle Vehicle { get; set; } = null!;
-    }
+public class Transportation
+{
+    public string ActiveVehicle { get; set; } = string.Empty;
+
+    [ForeignKey("Cargos")]
+    public int CargoID { get; set; }
+
+    public Cargos Load { get; set; } = null!;
+
+    [ForeignKey("Vehicle")]
+    public int VehicleId { get; set; }
+
+    public Vehicle Vehicle { get; set; } = null!;
 }

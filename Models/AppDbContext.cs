@@ -8,7 +8,6 @@ namespace CCAPI.Models
         {
         }
 
-        // DbSet для каждой таблицы
         public DbSet<Client> Clients { get; set; } = null!;
         public DbSet<Orders> Order { get; set; } = null!;
         public DbSet<Cargos> Cargo { get; set; } = null!;
@@ -16,17 +15,17 @@ namespace CCAPI.Models
         public DbSet<Vehicle> Vehicles { get; set; } = null!;
         public DbSet<Driver> Drivers { get; set; } = null!;
 
-        // Конфигурация отношений
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Пример конфигурации отношения многие-ко-многим между Заказами и Перевозками
             modelBuilder.Entity<Transportation>()
-                .HasKey(t => new { t.LoadId, t.VehicleId });
+                .HasKey(t => new { t.Load, t.VehicleId });
 
             modelBuilder.Entity<Transportation>()
                 .HasOne(t => t.Load)
                 .WithMany(l => l.Transportations)
-                .HasForeignKey(t => t.LoadId);
+                .HasForeignKey(t => t.Load);
 
             modelBuilder.Entity<Transportation>()
                 .HasOne(t => t.Vehicle)

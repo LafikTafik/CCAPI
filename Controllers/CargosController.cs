@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CCAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using CCAPI.DTO;
 
 namespace CCAPI.Controllers
 {
@@ -35,20 +36,9 @@ namespace CCAPI.Controllers
             return Ok(cargo);
         }
 
-        public class CreateCargoDto
-        {
-            public required string Weight { get; set; }
-            public required string Dimensions { get; set; }
-            public string? Descriptions { get; set; }
-
-            public int? OrderID { get; set; }
-        }
-
-
-
         // POST: api/cargos
         [HttpPost]
-        public async Task<IActionResult> Create(CreateCargoDto dto)
+        public async Task<IActionResult> Create(CargoDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

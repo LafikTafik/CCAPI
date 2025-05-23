@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CCAPI.Models;
+using CCAPI.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace CCAPI.Controllers
@@ -37,8 +38,19 @@ namespace CCAPI.Controllers
 
         // POST: api/drivers
         [HttpPost]
-        public async Task<IActionResult> Create(Driver driver)
+        public async Task<IActionResult> Create(DriverDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var driver = new Driver
+            {
+                FirstName = dto.FirstName,
+                LastName = dto.LastName,
+                LicenseNumber = dto.LicenseNumber,
+                PhoneNumber = dto.PhoneNumber
+            };
+
             _context.Drivers.Add(driver);
             await _context.SaveChangesAsync();
 
@@ -47,12 +59,22 @@ namespace CCAPI.Controllers
 
         // PUT: api/drivers/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Driver driver)
+        public async Task<IActionResult> Update(int id, DriverDto dto)
         {
-            if (id != driver.ID)
-                return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            _context.Entry(driver).State = EntityState.Modified;
+            var existingDriver = await _context.Drivers.FindAsync(id);
+
+            if (existingDriver == null)
+                return NotFound();
+
+            existingDriver.FirstName = dto.FirstName;
+            existingDriver.LastName = dto.LastName;
+            existingDriver.LicenseNumber = dto.LicenseNumber;
+            existingDriver.PhoneNumber = dto.PhoneNumber;
+
+            _context.Drivers.Update(existingDriver);
             await _context.SaveChangesAsync();
 
             return NoContent();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CCAPI.Models;
+using CCAPI.DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace CCAPI.Controllers
@@ -37,8 +38,20 @@ namespace CCAPI.Controllers
 
         // POST: api/clients
         [HttpPost]
-        public async Task<IActionResult> Create(Client client)
+        public async Task<IActionResult> Create(ClientDto dto)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var client = new Client
+            {
+                Name = dto.Name,
+                Surname = dto.Surname,
+                Phone = dto.Phone,
+                Email = dto.Email,
+                Address = dto.Address
+            };
+
             _context.Clients.Add(client);
             await _context.SaveChangesAsync();
 
@@ -47,12 +60,23 @@ namespace CCAPI.Controllers
 
         // PUT: api/clients/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Client client)
+        public async Task<IActionResult> Update(int id, ClientDto dto)
         {
-            if (id != client.ID)
-                return BadRequest();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            _context.Clients.Update(client);
+            var existingClient = await _context.Clients.FindAsync(id);
+
+            if (existingClient == null)
+                return NotFound();
+
+            existingClient.Name = dto.Name;
+            existingClient.Surname = dto.Surname;
+            existingClient.Phone = dto.Phone;
+            existingClient.Email = dto.Email;
+            existingClient.Address = dto.Address;
+
+            _context.Clients.Update(existingClient);
             await _context.SaveChangesAsync();
 
             return NoContent();

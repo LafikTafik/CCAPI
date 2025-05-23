@@ -23,9 +23,8 @@ namespace CCAPI.Models
         [Column("Adress")]
         public string Address { get; set; } = string.Empty;
 
-        // Указываем, что внешний ключ в таблице Order — это "IDClient"
         [InverseProperty("Client")]
-        [ForeignKey("IDClient")]  // <-- Вот здесь явно указываем, какой столбец используется как внешний ключ
+        [ForeignKey("IDClient")]  
         public ICollection<Orders> Orders { get; set; } = new List<Orders>();
     }
 }

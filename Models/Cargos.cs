@@ -22,7 +22,6 @@ namespace CCAPI.Models
         // Отношение "один ко многим" с Перевозками
         public ICollection<Transportation> Transportations { get; set; } = new List<Transportation>();
 
-        // Навигационное свойство к заказу
         public Orders Order { get; set; } = null!;
     }
 }
