@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CCAPI.Models;
-using CCAPI.DTO;
+using CCAPI.DTO.defaultt;
+using CCAPI.DTO.deleted;
 using Microsoft.EntityFrameworkCore;
 
 namespace CCAPI.Controllers
@@ -20,15 +21,58 @@ namespace CCAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var vehicles = await _context.Vehicles.ToListAsync();
+            var vehicles = await _context.Vehicles
+                .Where(v => !v.IsDeleted)
+                .Select(v => new VehicleDto
+                {
+                    ID = v.ID,
+                    Type = v.Type,
+                    Capacity = v.Capacity,
+                    VehicleNum = v.VehicleNum,
+                    DriverId = v.DriverId
+                })
+                .ToListAsync();
+
             return Ok(vehicles);
+        }
+
+        // GET: api/vehicles/deleted
+        [HttpGet("deleted")]
+        public async Task<IActionResult> GetDeleted()
+        {
+            var deletedVehicles = await _context.Vehicles
+                .Where(v => v.IsDeleted)
+                .Select(v => new DeletedVehicleDto
+                {
+                    ID = v.ID,
+                    Type = v.Type,
+                    Capacity = v.Capacity,
+                    VehicleNum = v.VehicleNum,
+                    DriverId = v.DriverId,
+
+                    IsDeleted = v.IsDeleted,
+                    DeletedAt = v.DeletedAt
+                })
+                .ToListAsync();
+
+            return Ok(deletedVehicles);
         }
 
         // GET: api/vehicles/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var vehicle = await _context.Vehicles.FindAsync(id);
+            var vehicle = await _context.Vehicles
+                .Where(v => !v.IsDeleted && v.ID == id)
+                .Select(v => new VehicleDto
+                {
+                    ID = v.ID,
+                    Type = v.Type,
+                    Capacity = v.Capacity,
+                    VehicleNum = v.VehicleNum,
+                    DriverId = v.DriverId
+                })
+                .FirstOrDefaultAsync();
 
             if (vehicle == null)
                 return NotFound();
@@ -48,7 +92,9 @@ namespace CCAPI.Controllers
                 Type = dto.Type,
                 Capacity = dto.Capacity,
                 VehicleNum = dto.VehicleNum,
-                DriverId = dto.DriverId
+                DriverId = dto.DriverId,
+                IsDeleted = false,
+                DeletedAt = null
             };
 
             _context.Vehicles.Add(vehicle);
@@ -64,17 +110,17 @@ namespace CCAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var existingVehicle = await _context.Vehicles.FindAsync(id);
+            var existing = await _context.Vehicles.FindAsync(id);
 
-            if (existingVehicle == null)
+            if (existing == null || existing.IsDeleted)
                 return NotFound();
 
-            existingVehicle.Type = dto.Type;
-            existingVehicle.Capacity = dto.Capacity;
-            existingVehicle.VehicleNum = dto.VehicleNum;
-            existingVehicle.DriverId = dto.DriverId;
+            existing.Type = dto.Type;
+            existing.Capacity = dto.Capacity;
+            existing.VehicleNum = dto.VehicleNum;
+            existing.DriverId = dto.DriverId;
 
-            _context.Vehicles.Update(existingVehicle);
+            _context.Vehicles.Update(existing);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -86,10 +132,32 @@ namespace CCAPI.Controllers
         {
             var vehicle = await _context.Vehicles.FindAsync(id);
 
+            if (vehicle == null || vehicle.IsDeleted)
+                return NotFound();
+
+            vehicle.IsDeleted = true;
+            vehicle.DeletedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // POST: api/vehicles/restore/{id}
+        [HttpPost("restore/{id}")]
+        public async Task<IActionResult> Restore(int id)
+        {
+            var vehicle = await _context.Vehicles.FindAsync(id);
+
             if (vehicle == null)
                 return NotFound();
 
-            _context.Vehicles.Remove(vehicle);
+            if (!vehicle.IsDeleted)
+                return BadRequest("Транспорт не удален");
+
+            vehicle.IsDeleted = false;
+            vehicle.DeletedAt = null;
+
             await _context.SaveChangesAsync();
 
             return NoContent();

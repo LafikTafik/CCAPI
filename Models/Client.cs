@@ -23,8 +23,10 @@ namespace CCAPI.Models
         [Column("Adress")]
         public string Address { get; set; } = string.Empty;
 
-        [InverseProperty("Client")]
-        [ForeignKey("IDClient")]  
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
+
+
         public ICollection<Orders> Orders { get; set; } = new List<Orders>();
     }
 }

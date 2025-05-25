@@ -1,15 +1,9 @@
-﻿using CCAPI.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CCAPI.DTO
+namespace CCAPI.DTO.deleted
 {
-    public class OrderDto
+    public class DeletedOrderDto
     {
         [Key]
         public int ID { get; set; }
@@ -21,10 +15,13 @@ namespace CCAPI.DTO
         public DateTime? Date { get; set; }
 
         [Column("Status")]
-        public string Status { get; set; } = string.Empty;
+        public string? Status { get; set; } 
 
         [Column("Price")]
         public decimal? Price { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; }
 
     }
 }

@@ -7,19 +7,23 @@ namespace CCAPI.Models
     {
         [Key]
         [Column("ActiveVehicle")]
-        public int ActiveVehicle { get; set; } // Теперь это первичный ключ
+        public int ActiveVehicle { get; set; } 
 
         [Column("CargoID")]
         public int CargoID { get; set; }
 
-        [Column("VehicleID")]
-        public int VehicleID { get; set; }
+        [Column("VehicleId")]
+        public int VehicleId { get; set; }
+
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
+
 
         // Навигационные свойства
         [ForeignKey("CargoID")]
-        public Cargos? Load { get; set; }
+        public Cargos Load { get; set; } = null!;
 
-        [ForeignKey("VehicleID")]
+        [ForeignKey("VehicleId")]
         public Vehicle? Vehicle { get; set; }
     }
 }

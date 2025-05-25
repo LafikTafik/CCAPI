@@ -1,4 +1,4 @@
-﻿namespace CCAPI.DTO
+﻿namespace CCAPI.DTO.defaultt
 {
     public class TransportationDto
     {

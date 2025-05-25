@@ -21,7 +21,9 @@ namespace CCAPI.Models
         [Column("Price")]
         public decimal? Price { get; set; }
 
-    
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
+
         public Client? Client { get; set; }
         public ICollection<Cargos>? Cargos { get; set; }
 

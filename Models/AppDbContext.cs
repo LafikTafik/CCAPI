@@ -18,29 +18,36 @@ namespace CCAPI.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Связь Orders <-> Client
+            // Только если таблицы называются не так, как классы
+            modelBuilder.Entity<Client>().ToTable("Clients");
+            modelBuilder.Entity<Orders>().ToTable("Order");
+            modelBuilder.Entity<Cargos>().ToTable("Cargo");
+            modelBuilder.Entity<Transportation>().ToTable("Transportations");
+            modelBuilder.Entity<Vehicle>().ToTable("Vehicle");
+            modelBuilder.Entity<Driver>().ToTable("Drivers");
+
+            // Связи
             modelBuilder.Entity<Orders>()
                 .HasOne(o => o.Client)
                 .WithMany(c => c.Orders)
                 .HasForeignKey(o => o.IDClient);
 
-            // Связь Cargos <-> Orders
             modelBuilder.Entity<Cargos>()
                 .HasOne(c => c.Order)
                 .WithMany(o => o.Cargos)
                 .HasForeignKey(c => c.OrderId);
 
-            // 🔥 Связь Transportation -> Cargos
-            modelBuilder.Entity<Transportation>()
-                .HasOne<Vehicle>(t => t.Vehicle)       // Навигация к транспорту
-                .WithMany()                             // Без обратной коллекции
-                .HasForeignKey(t => t.VehicleID);      // Через поле VehicleID
 
-            // Связь Transportation -> Cargos
             modelBuilder.Entity<Transportation>()
-                .HasOne<Cargos>(t => t.Load)            // Навигация к грузу
-                .WithMany()                              // Без обратной связи
+                .HasOne<Cargos>(t => t.Load)
+                .WithMany()
                 .HasForeignKey(t => t.CargoID);
+
+            modelBuilder.Entity<Transportation>()
+                .HasOne<Vehicle>(t => t.Vehicle)
+                .WithMany()
+                .HasForeignKey(t => t.VehicleId);
+
 
             base.OnModelCreating(modelBuilder);
         }

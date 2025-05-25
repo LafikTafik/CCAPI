@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CCAPI.Models;
-using CCAPI.DTO;
+using CCAPI.DTO.defaultt;
+using CCAPI.DTO.deleted;
 using Microsoft.EntityFrameworkCore;
 
 namespace CCAPI.Controllers
@@ -20,15 +21,52 @@ namespace CCAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var transportations = await _context.Transportations.ToListAsync();
+            var transportations = await _context.Transportations
+                .Where(t => !t.IsDeleted)
+                .Select(t => new TransportationDto
+                {
+                    ActiveVehicle = t.ActiveVehicle,
+                    LoadId = t.CargoID,
+                    VehicleId = t.VehicleId
+                })
+                .ToListAsync();
+
             return Ok(transportations);
+        }
+
+        // GET: api/transportations/deleted
+        [HttpGet("deleted")]
+        public async Task<IActionResult> GetDeleted()
+        {
+            var deletedTransports = await _context.Transportations
+                .Where(t => t.IsDeleted)
+                .Select(t => new DeletedTransportationDto
+                {
+                    ActiveVehicle = t.ActiveVehicle,
+                    LoadId = t.CargoID,
+                    VehicleId = t.VehicleId,
+
+                    IsDeleted = t.IsDeleted,
+                    DeletedAt = t.DeletedAt
+                })
+                .ToListAsync();
+
+            return Ok(deletedTransports);
         }
 
         // GET: api/transportations/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var transportation = await _context.Transportations.FindAsync(id);
+            var transportation = await _context.Transportations
+                .Where(t => !t.IsDeleted && t.ActiveVehicle == id)
+                .Select(t => new TransportationDto
+                {
+                    ActiveVehicle = t.ActiveVehicle,
+                    LoadId = t.CargoID,
+                    VehicleId = t.VehicleId
+                })
+                .FirstOrDefaultAsync();
 
             if (transportation == null)
                 return NotFound();
@@ -47,7 +85,9 @@ namespace CCAPI.Controllers
             {
                 ActiveVehicle = dto.ActiveVehicle,
                 CargoID = dto.LoadId,
-                VehicleID = dto.VehicleId
+                VehicleId = dto.VehicleId,
+                IsDeleted = false,
+                DeletedAt = null
             };
 
             _context.Transportations.Add(transportation);
@@ -65,11 +105,11 @@ namespace CCAPI.Controllers
 
             var existing = await _context.Transportations.FindAsync(id);
 
-            if (existing == null)
+            if (existing == null || existing.IsDeleted)
                 return NotFound();
 
             existing.CargoID = dto.LoadId;
-            existing.VehicleID = dto.VehicleId;
+            existing.VehicleId = dto.VehicleId;
 
             _context.Transportations.Update(existing);
             await _context.SaveChangesAsync();
@@ -83,10 +123,32 @@ namespace CCAPI.Controllers
         {
             var transportation = await _context.Transportations.FindAsync(id);
 
+            if (transportation == null || transportation.IsDeleted)
+                return NotFound();
+
+            transportation.IsDeleted = true;
+            transportation.DeletedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // POST: api/transportations/restore/{id}
+        [HttpPost("restore/{id}")]
+        public async Task<IActionResult> Restore(int id)
+        {
+            var transportation = await _context.Transportations.FindAsync(id);
+
             if (transportation == null)
                 return NotFound();
 
-            _context.Transportations.Remove(transportation);
+            if (!transportation.IsDeleted)
+                return BadRequest("Перевозка не удалена");
+
+            transportation.IsDeleted = false;
+            transportation.DeletedAt = null;
+
             await _context.SaveChangesAsync();
 
             return NoContent();

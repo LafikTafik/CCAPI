@@ -20,6 +20,11 @@ namespace CCAPI.Models
         [Column("VehicleNum")]
         public string VehicleNum { get; set; } = string.Empty;
 
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
+
+
+
         public ICollection<Transportation> Transportations { get; set; } = new List<Transportation>();
 
         public Driver Driver { get; set; } = null!;

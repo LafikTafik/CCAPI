@@ -19,10 +19,16 @@ namespace CCAPI.Models
 
         [Column("Descriptions")]
         public string Descriptions { get; set; } = string.Empty;
-        // Отношение "один ко многим" с Перевозками
 
-        public Orders Order { get; set; } = null!;
-        [InverseProperty("Load")]
-        public ICollection<Transportation> Transportations { get; set; } = new List<Transportation>();
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
+
+
+
+        // Отношение "один ко многим" с Перевозками
+        [ForeignKey("OrderId")]
+        public Orders? Order { get; set; }
+
+    
     }
 }

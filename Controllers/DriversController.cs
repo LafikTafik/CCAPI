@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using CCAPI.Models;
-using CCAPI.DTO;
+using CCAPI.DTO.defaultt;
+using CCAPI.DTO.deleted;
 using Microsoft.EntityFrameworkCore;
 
 namespace CCAPI.Controllers
@@ -20,15 +21,58 @@ namespace CCAPI.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var drivers = await _context.Drivers.ToListAsync();
+            var drivers = await _context.Drivers
+                .Where(d => !d.IsDeleted)
+                .Select(d => new DriverDto
+                {
+                    ID = d.ID,
+                    FirstName = d.FirstName,
+                    LastName = d.LastName,
+                    LicenseNumber = d.LicenseNumber,
+                    PhoneNumber = d.PhoneNumber
+                })
+                .ToListAsync();
+
             return Ok(drivers);
+        }
+
+        // GET: api/drivers/deleted
+        [HttpGet("deleted")]
+        public async Task<IActionResult> GetDeleted()
+        {
+            var deletedDrivers = await _context.Drivers
+                .Where(d => d.IsDeleted)
+                .Select(d => new DeletedDriverDto
+                {
+                    ID = d.ID,
+                    FirstName = d.FirstName,
+                    LastName = d.LastName,
+                    LicenseNumber = d.LicenseNumber,
+                    PhoneNumber = d.PhoneNumber,
+
+                    IsDeleted = d.IsDeleted,
+                    DeletedAt = d.DeletedAt
+                })
+                .ToListAsync();
+
+            return Ok(deletedDrivers);
         }
 
         // GET: api/drivers/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var driver = await _context.Drivers.FindAsync(id);
+            var driver = await _context.Drivers
+                .Where(d => !d.IsDeleted && d.ID == id)
+                .Select(d => new DriverDto
+                {
+                    ID = d.ID,
+                    FirstName = d.FirstName,
+                    LastName = d.LastName,
+                    LicenseNumber = d.LicenseNumber,
+                    PhoneNumber = d.PhoneNumber
+                })
+                .FirstOrDefaultAsync();
 
             if (driver == null)
                 return NotFound();
@@ -48,7 +92,9 @@ namespace CCAPI.Controllers
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 LicenseNumber = dto.LicenseNumber,
-                PhoneNumber = dto.PhoneNumber
+                PhoneNumber = dto.PhoneNumber,
+                IsDeleted = false,
+                DeletedAt = null
             };
 
             _context.Drivers.Add(driver);
@@ -64,17 +110,17 @@ namespace CCAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var existingDriver = await _context.Drivers.FindAsync(id);
+            var existing = await _context.Drivers.FindAsync(id);
 
-            if (existingDriver == null)
+            if (existing == null || existing.IsDeleted)
                 return NotFound();
 
-            existingDriver.FirstName = dto.FirstName;
-            existingDriver.LastName = dto.LastName;
-            existingDriver.LicenseNumber = dto.LicenseNumber;
-            existingDriver.PhoneNumber = dto.PhoneNumber;
+            existing.FirstName = dto.FirstName;
+            existing.LastName = dto.LastName;
+            existing.LicenseNumber = dto.LicenseNumber;
+            existing.PhoneNumber = dto.PhoneNumber;
 
-            _context.Drivers.Update(existingDriver);
+            _context.Drivers.Update(existing);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -86,10 +132,32 @@ namespace CCAPI.Controllers
         {
             var driver = await _context.Drivers.FindAsync(id);
 
+            if (driver == null || driver.IsDeleted)
+                return NotFound();
+
+            driver.IsDeleted = true;
+            driver.DeletedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        // POST: api/drivers/restore/{id}
+        [HttpPost("restore/{id}")]
+        public async Task<IActionResult> Restore(int id)
+        {
+            var driver = await _context.Drivers.FindAsync(id);
+
             if (driver == null)
                 return NotFound();
 
-            _context.Drivers.Remove(driver);
+            if (!driver.IsDeleted)
+                return BadRequest("Водитель не удален");
+
+            driver.IsDeleted = false;
+            driver.DeletedAt = null;
+
             await _context.SaveChangesAsync();
 
             return NoContent();

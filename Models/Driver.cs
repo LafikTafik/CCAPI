@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CCAPI.Models
 {
+    [Table("Drivers")]
     public class Driver
     {
         [Key]
@@ -20,7 +21,9 @@ namespace CCAPI.Models
         [Column("Phone")]
         public string PhoneNumber { get; set; } = string.Empty;
 
-     
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
+
         public ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
     }
 }
