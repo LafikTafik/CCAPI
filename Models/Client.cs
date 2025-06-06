@@ -26,7 +26,6 @@ namespace CCAPI.Models
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeletedAt { get; set; }
 
-
         public ICollection<Orders> Orders { get; set; } = new List<Orders>();
     }
 }

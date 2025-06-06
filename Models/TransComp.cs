@@ -1,0 +1,21 @@
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+
+namespace CCAPI.Models
+{
+    public class TransComp
+    {
+        [Key]
+        public int ID { get; set; }
+
+        public int TransportationID { get; set; }
+        public int CompanyID { get; set; }
+
+        // Навигационные свойства
+        [ForeignKey("TransportationID")]
+        public Transportation Transportation { get; set; } = null!;
+
+        [ForeignKey("CompanyID")]
+        public TransportationCompany Company { get; set; } = null!;
+    }
+}

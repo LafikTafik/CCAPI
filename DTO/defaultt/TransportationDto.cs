@@ -2,8 +2,11 @@
 {
     public class TransportationDto
     {
-        public int ActiveVehicle { get; set; }
-        public int LoadId { get; set; }
+        public int ID { get; set; }
+        public int TransportationCompanyId { get; set; }
+        public int CargoId { get; set; }
         public int VehicleId { get; set; }
+        public string StartPoint { get; set; } = string.Empty;
+        public string EndPoint { get; set; } = string.Empty;
     }
 }

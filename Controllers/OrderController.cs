@@ -26,10 +26,11 @@ namespace CCAPI.Controllers
                 .Select(o => new OrderDto
                 {
                     ID = o.ID,
-                    Status = o.Status,
-                    Price = o.Price,
+                    Transid = o.Transid,
+                    IDClient = o.IDClient,
                     Date = o.Date,
-                    IDClient = o.IDClient
+                    Status = o.Status,
+                    Price = o.Price
                 })
                 .ToListAsync();
 
@@ -45,11 +46,11 @@ namespace CCAPI.Controllers
                 .Select(o => new DeletedOrderDto
                 {
                     ID = o.ID,
+                    Transid = o.Transid,
+                    IDClient = o.IDClient,
+                    Date = o.Date,
                     Status = o.Status,
                     Price = o.Price,
-                    Date = o.Date,
-                    IDClient = o.IDClient,
-
                     IsDeleted = o.IsDeleted,
                     DeletedAt = o.DeletedAt
                 })
@@ -67,16 +68,15 @@ namespace CCAPI.Controllers
                 .Select(o => new OrderDto
                 {
                     ID = o.ID,
-                    Status = o.Status,
-                    Price = o.Price,
+                    Transid = o.Transid,
+                    IDClient = o.IDClient,
                     Date = o.Date,
-                    IDClient = o.IDClient
+                    Status = o.Status,
+                    Price = o.Price
                 })
                 .FirstOrDefaultAsync();
 
-            if (order == null)
-                return NotFound();
-
+            if (order == null) return NotFound();
             return Ok(order);
         }
 
@@ -84,22 +84,19 @@ namespace CCAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(OrderDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
             var order = new Orders
             {
-                Status = dto.Status,
-                Price = dto.Price ?? 0,
-                Date = dto.Date ?? DateTime.UtcNow,
+                Transid = dto.Transid,
                 IDClient = dto.IDClient,
-                IsDeleted = false,
-                DeletedAt = null
+                Date = dto.Date,
+                Status = dto.Status,
+                Price = dto.Price
             };
 
             _context.Order.Add(order);
             await _context.SaveChangesAsync();
-
             return CreatedAtAction(nameof(GetById), new { id = order.ID }, order);
         }
 
@@ -107,22 +104,16 @@ namespace CCAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, OrderDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var existing = await _context.Order.FindAsync(id);
+            if (existing == null || existing.IsDeleted) return NotFound();
 
-            if (existing == null || existing.IsDeleted)
-                return NotFound();
-
+            existing.Transid = dto.Transid;
+            existing.IDClient = dto.IDClient;
+            existing.Date = dto.Date;
             existing.Status = dto.Status;
             existing.Price = dto.Price;
-            existing.Date = dto.Date;
-            existing.IDClient = dto.IDClient;
 
-            _context.Order.Update(existing);
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 
@@ -131,15 +122,11 @@ namespace CCAPI.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var order = await _context.Order.FindAsync(id);
-
-            if (order == null || order.IsDeleted)
-                return NotFound();
+            if (order == null || order.IsDeleted) return NotFound();
 
             order.IsDeleted = true;
             order.DeletedAt = DateTime.UtcNow;
-
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
 
@@ -148,18 +135,12 @@ namespace CCAPI.Controllers
         public async Task<IActionResult> Restore(int id)
         {
             var order = await _context.Order.FindAsync(id);
-
-            if (order == null)
-                return NotFound();
-
-            if (!order.IsDeleted)
-                return BadRequest("Заказ не удален");
+            if (order == null) return NotFound();
 
             order.IsDeleted = false;
             order.DeletedAt = null;
 
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }

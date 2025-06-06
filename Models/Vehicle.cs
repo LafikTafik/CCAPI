@@ -8,25 +8,27 @@ namespace CCAPI.Models
         [Key]
         public int ID { get; set; }
 
-        [Column("Type")]
+        public int TransportationCompanyId { get; set; }
+
         public string Type { get; set; } = string.Empty;
 
-        [Column("Capacity")]
+
         public string Capacity { get; set; } = string.Empty;
 
-        [Column("DriverID")]
+
         public int DriverId { get; set; }
 
-        [Column("VehicleNum")]
+
         public string VehicleNum { get; set; } = string.Empty;
 
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeletedAt { get; set; }
 
 
+        [ForeignKey("TransportationCompanyId")]
+        public TransportationCompany Company { get; set; } = null!;
 
-        public ICollection<Transportation> Transportations { get; set; } = new List<Transportation>();
-
+        [ForeignKey("DriverId")]
         public Driver Driver { get; set; } = null!;
     }
 }

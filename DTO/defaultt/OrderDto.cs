@@ -11,19 +11,11 @@ namespace CCAPI.DTO.defaultt
 {
     public class OrderDto
     {
-        [Key]
         public int ID { get; set; }
-
-        [Column("IDClient")]
+        public int Transid { get; set; }
         public int? IDClient { get; set; }
-
-        [Column("Date")]
         public DateTime? Date { get; set; }
-
-        [Column("Status")]
         public string? Status { get; set; } 
-
-        [Column("Price")]
         public decimal? Price { get; set; }
 
     }

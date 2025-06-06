@@ -1,166 +1,138 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CCAPI.Models;
-using CCAPI.DTO.defaultt;
+﻿using CCAPI.DTO.defaultt;
 using CCAPI.DTO.deleted;
+using CCAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace CCAPI.Controllers
+[ApiController]
+[Route("api/[controller]")]
+public class VehiclesController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class VehiclesController : ControllerBase
+    private readonly AppDbContext _context;
+
+    public VehiclesController(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public VehiclesController(AppDbContext context)
-        {
-            _context = context;
-        }
-
-        // GET: api/vehicles
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var vehicles = await _context.Vehicles
-                .Where(v => !v.IsDeleted)
-                .Select(v => new VehicleDto
-                {
-                    ID = v.ID,
-                    Type = v.Type,
-                    Capacity = v.Capacity,
-                    VehicleNum = v.VehicleNum,
-                    DriverId = v.DriverId
-                })
-                .ToListAsync();
-
-            return Ok(vehicles);
-        }
-
-        // GET: api/vehicles/deleted
-        [HttpGet("deleted")]
-        public async Task<IActionResult> GetDeleted()
-        {
-            var deletedVehicles = await _context.Vehicles
-                .Where(v => v.IsDeleted)
-                .Select(v => new DeletedVehicleDto
-                {
-                    ID = v.ID,
-                    Type = v.Type,
-                    Capacity = v.Capacity,
-                    VehicleNum = v.VehicleNum,
-                    DriverId = v.DriverId,
-
-                    IsDeleted = v.IsDeleted,
-                    DeletedAt = v.DeletedAt
-                })
-                .ToListAsync();
-
-            return Ok(deletedVehicles);
-        }
-
-        // GET: api/vehicles/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var vehicle = await _context.Vehicles
-                .Where(v => !v.IsDeleted && v.ID == id)
-                .Select(v => new VehicleDto
-                {
-                    ID = v.ID,
-                    Type = v.Type,
-                    Capacity = v.Capacity,
-                    VehicleNum = v.VehicleNum,
-                    DriverId = v.DriverId
-                })
-                .FirstOrDefaultAsync();
-
-            if (vehicle == null)
-                return NotFound();
-
-            return Ok(vehicle);
-        }
-
-        // POST: api/vehicles
-        [HttpPost]
-        public async Task<IActionResult> Create(VehicleDto dto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var vehicle = new Vehicle
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var vehicles = await _context.Vehicle
+            .Where(v => !v.IsDeleted)
+            .Select(v => new VehicleDto
             {
-                Type = dto.Type,
-                Capacity = dto.Capacity,
-                VehicleNum = dto.VehicleNum,
-                DriverId = dto.DriverId,
-                IsDeleted = false,
-                DeletedAt = null
-            };
+                ID = v.ID,
+                TransportationCompanyId = v.TransportationCompanyId,
+                Type = v.Type,
+                Capacity = v.Capacity,
+                DriverId = v.DriverId,
+                VehicleNum = v.VehicleNum
+            })
+            .ToListAsync();
 
-            _context.Vehicles.Add(vehicle);
-            await _context.SaveChangesAsync();
+        return Ok(vehicles);
+    }
 
-            return CreatedAtAction(nameof(GetById), new { id = vehicle.ID }, vehicle);
-        }
+    [HttpGet("deleted")]
+    public async Task<IActionResult> GetDeleted()
+    {
+        var deleted = await _context.Vehicle
+            .Where(v => v.IsDeleted)
+            .Select(v => new DeletedVehicleDto
+            {
+                ID = v.ID,
+                TransportationCompanyId = v.TransportationCompanyId,
+                Type = v.Type,
+                Capacity = v.Capacity,
+                DriverId = v.DriverId,
+                VehicleNum = v.VehicleNum,
+                IsDeleted = v.IsDeleted,
+                DeletedAt = v.DeletedAt
+            })
+            .ToListAsync();
 
-        // PUT: api/vehicles/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, VehicleDto dto)
+        return Ok(deleted);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(int id)
+    {
+        var vehicle = await _context.Vehicle
+            .Where(v => !v.IsDeleted && v.ID == id)
+            .Select(v => new VehicleDto
+            {
+                ID = v.ID,
+                TransportationCompanyId = v.TransportationCompanyId,
+                Type = v.Type,
+                Capacity = v.Capacity,
+                DriverId = v.DriverId,
+                VehicleNum = v.VehicleNum
+            })
+            .FirstOrDefaultAsync();
+
+        if (vehicle == null) return NotFound();
+        return Ok(vehicle);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create(VehicleDto dto)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var vehicle = new Vehicle
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            TransportationCompanyId = dto.TransportationCompanyId,
+            Type = dto.Type,
+            Capacity = dto.Capacity,
+            DriverId = dto.DriverId,
+            VehicleNum = dto.VehicleNum
+        };
 
-            var existing = await _context.Vehicles.FindAsync(id);
+        _context.Vehicle.Add(vehicle);
+        await _context.SaveChangesAsync();
+        return CreatedAtAction(nameof(GetById), new { id = vehicle.ID }, vehicle);
+    }
 
-            if (existing == null || existing.IsDeleted)
-                return NotFound();
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(int id, VehicleDto dto)
+    {
+        var existing = await _context.Vehicle.FindAsync(id);
+        if (existing == null || existing.IsDeleted) return NotFound();
 
-            existing.Type = dto.Type;
-            existing.Capacity = dto.Capacity;
-            existing.VehicleNum = dto.VehicleNum;
-            existing.DriverId = dto.DriverId;
+        existing.TransportationCompanyId = dto.TransportationCompanyId;
+        existing.Type = dto.Type;
+        existing.Capacity = dto.Capacity;
+        existing.DriverId = dto.DriverId;
+        existing.VehicleNum = dto.VehicleNum;
 
-            _context.Vehicles.Update(existing);
-            await _context.SaveChangesAsync();
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
 
-            return NoContent();
-        }
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var vehicle = await _context.Vehicle.FindAsync(id);
+        if (vehicle == null || vehicle.IsDeleted) return NotFound();
 
-        // DELETE: api/vehicles/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var vehicle = await _context.Vehicles.FindAsync(id);
+        vehicle.IsDeleted = true;
+        vehicle.DeletedAt = DateTime.UtcNow;
 
-            if (vehicle == null || vehicle.IsDeleted)
-                return NotFound();
+        await _context.SaveChangesAsync();
+        return NoContent();
+    }
 
-            vehicle.IsDeleted = true;
-            vehicle.DeletedAt = DateTime.UtcNow;
+    [HttpPost("restore/{id}")]
+    public async Task<IActionResult> Restore(int id)
+    {
+        var vehicle = await _context.Vehicle.FindAsync(id);
+        if (vehicle == null) return NotFound();
 
-            await _context.SaveChangesAsync();
+        vehicle.IsDeleted = false;
+        vehicle.DeletedAt = null;
 
-            return NoContent();
-        }
-
-        // POST: api/vehicles/restore/{id}
-        [HttpPost("restore/{id}")]
-        public async Task<IActionResult> Restore(int id)
-        {
-            var vehicle = await _context.Vehicles.FindAsync(id);
-
-            if (vehicle == null)
-                return NotFound();
-
-            if (!vehicle.IsDeleted)
-                return BadRequest("Транспорт не удален");
-
-            vehicle.IsDeleted = false;
-            vehicle.DeletedAt = null;
-
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
+        await _context.SaveChangesAsync();
+        return NoContent();
     }
 }

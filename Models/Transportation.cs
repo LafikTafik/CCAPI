@@ -6,24 +6,24 @@ namespace CCAPI.Models
     public class Transportation
     {
         [Key]
-        [Column("ActiveVehicle")]
-        public int ActiveVehicle { get; set; } 
+        public int ID { get; set; }
 
-        [Column("CargoID")]
-        public int CargoID { get; set; }
-
-        [Column("VehicleId")]
+        public int TransportationCompanyId { get; set; }
+        public int CargoId { get; set; }
         public int VehicleId { get; set; }
 
-        public bool IsDeleted { get; set; } = false;
+        public string StartPoint { get; set; } = string.Empty;
+        public string EndPoint { get; set; } = string.Empty;
+
+        public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
 
 
         // Навигационные свойства
-        [ForeignKey("CargoID")]
-        public Cargos Load { get; set; } = null!;
+        [ForeignKey("Transid")]
+        public Orders Order { get; set; } = null!;
 
-        [ForeignKey("VehicleId")]
-        public Vehicle? Vehicle { get; set; }
+        // Связь через Trans-Comp
+        public ICollection<TransComp> TransComp { get; set; } = new List<TransComp>();
     }
 }
