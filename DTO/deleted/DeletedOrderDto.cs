@@ -6,7 +6,7 @@ namespace CCAPI.DTO.deleted
     public class DeletedOrderDto
     {
         public int ID { get; set; }
-        public int Transid { get; set; }
+        public int TransId { get; set; }
         public int? IDClient { get; set; }
         public DateTime? Date { get; set; }
         public string? Status { get; set; }

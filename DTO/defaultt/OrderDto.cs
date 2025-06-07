@@ -12,7 +12,7 @@ namespace CCAPI.DTO.defaultt
     public class OrderDto
     {
         public int ID { get; set; }
-        public int Transid { get; set; }
+        public int TransId { get; set; }
         public int? IDClient { get; set; }
         public DateTime? Date { get; set; }
         public string? Status { get; set; } 

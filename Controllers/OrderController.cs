@@ -26,7 +26,7 @@ namespace CCAPI.Controllers
                 .Select(o => new OrderDto
                 {
                     ID = o.ID,
-                    Transid = o.Transid,
+                    TransId = o.TransId,
                     IDClient = o.IDClient,
                     Date = o.Date,
                     Status = o.Status,
@@ -46,7 +46,7 @@ namespace CCAPI.Controllers
                 .Select(o => new DeletedOrderDto
                 {
                     ID = o.ID,
-                    Transid = o.Transid,
+                    TransId = o.TransId,
                     IDClient = o.IDClient,
                     Date = o.Date,
                     Status = o.Status,
@@ -68,7 +68,7 @@ namespace CCAPI.Controllers
                 .Select(o => new OrderDto
                 {
                     ID = o.ID,
-                    Transid = o.Transid,
+                    TransId = o.TransId,
                     IDClient = o.IDClient,
                     Date = o.Date,
                     Status = o.Status,
@@ -88,7 +88,7 @@ namespace CCAPI.Controllers
 
             var order = new Orders
             {
-                Transid = dto.Transid,
+                TransId = dto.TransId,
                 IDClient = dto.IDClient,
                 Date = dto.Date,
                 Status = dto.Status,
@@ -107,7 +107,7 @@ namespace CCAPI.Controllers
             var existing = await _context.Order.FindAsync(id);
             if (existing == null || existing.IsDeleted) return NotFound();
 
-            existing.Transid = dto.Transid;
+            existing.TransId = dto.TransId;
             existing.IDClient = dto.IDClient;
             existing.Date = dto.Date;
             existing.Status = dto.Status;

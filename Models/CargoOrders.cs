@@ -8,10 +8,10 @@ namespace CCAPI.Models
         public int OrderID { get; set; }
 
         // Навигации
-        [ForeignKey("CargoID")]
+    
         public Cargos Cargo { get; set; } = null!;
 
-        [ForeignKey("OrderID")]
+ 
         public Orders Order { get; set; } = null!;
     }
 }

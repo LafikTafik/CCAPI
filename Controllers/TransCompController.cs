@@ -32,11 +32,11 @@ namespace CCAPI.Controllers
         }
 
         // GET /api/transcomp/1/2
-        [HttpGet("{transId}/{companyId}")]
-        public async Task<IActionResult> GetByCompositeKey(int transId, int companyId)
+        [HttpGet("{transid}/{companyid}")]
+        public async Task<IActionResult> GetByCompositeKey(int transid, int companyid)
         {
             var link = await _context.TransComp
-                .Where(tc => tc.TransportationID == transId && tc.CompanyID == companyId)
+                .Where(tc => tc.TransportationID == transid && tc.CompanyID == companyid)
                 .FirstOrDefaultAsync();
 
             if (link == null) return NotFound();
@@ -48,20 +48,6 @@ namespace CCAPI.Controllers
             });
         }
 
-        // POST /api/transcomp
-        [HttpPost]
-        public async Task<IActionResult> Create(TransCompDto dto)
-        {
-            var link = new TransComp
-            {
-                TransportationID = dto.TransportationID,
-                CompanyID = dto.CompanyID
-            };
-
-            _context.TransComp.Add(link);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetByCompositeKey), new { transId = dto.TransportationID, companyId = dto.CompanyID }, dto);
-        }
 
         // DELETE /api/transcomp/1/2
         [HttpDelete("{transId}/{companyId}")]
@@ -76,6 +62,36 @@ namespace CCAPI.Controllers
             _context.TransComp.Remove(link);
             await _context.SaveChangesAsync();
             return NoContent();
+        }
+    
+        [HttpPost]
+        public async Task<IActionResult> Create(TransCompDto dto)
+        {
+            var transComp = new TransComp
+            {
+                TransportationID = dto.TransportationID,
+                CompanyID = dto.CompanyID
+            };
+
+            _context.TransComp.Add(transComp);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        [HttpGet("{transportationId}")]
+        public async Task<IActionResult> GetByTransportationId(int transportationId)
+        {
+            var items = await _context.TransComp
+                .Where(tc => tc.TransportationID == transportationId)
+                .Select(tc => new TransCompDto
+                {
+                    TransportationID = tc.TransportationID,
+                    CompanyID = tc.CompanyID
+                })
+                .ToListAsync();
+
+            return Ok(items);
         }
     }
 }

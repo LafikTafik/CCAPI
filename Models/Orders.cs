@@ -9,7 +9,7 @@ namespace CCAPI.Models
         [Key]
         public int ID { get; set; }
 
-        public int Transid { get; set; } 
+        public int TransId { get; set; } 
         public int? IDClient { get; set; }
         public DateTime? Date { get; set; }
         public string? Status { get; set; }
@@ -18,7 +18,7 @@ namespace CCAPI.Models
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeletedAt { get; set; }
 
-        [ForeignKey("Transid")]
+        //[ForeignKey("Transid")]
         public Transportation Transportation { get; set; } = null!;
 
         [ForeignKey("IDClient")]

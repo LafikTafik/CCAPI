@@ -41,8 +41,8 @@ namespace CCAPI.Models
             modelBuilder.Entity<Orders>()
                 .HasOne(o => o.Transportation)
                 .WithOne()
-                .HasForeignKey<Orders>(o => o.Transid)
-                .OnDelete(DeleteBehavior.Restrict);
+               .HasForeignKey<Orders>(o => o.TransId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             // --- Связь: Cargo ↔ Order (многие ко многим через CargoOrders)
             modelBuilder.Entity<CargoOrders>()

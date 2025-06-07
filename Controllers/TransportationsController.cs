@@ -24,8 +24,7 @@ public class TransportationsController : ControllerBase
             .Select(t => new TransportationDto
             {
                 ID = t.ID,
-                TransportationCompanyId = t.TransportationCompanyId,
-                CargoId = t.CargoId,
+                CargoId = t.CargoID,
                 VehicleId = t.VehicleId,
                 StartPoint = t.StartPoint,
                 EndPoint = t.EndPoint
@@ -43,8 +42,7 @@ public class TransportationsController : ControllerBase
             .Select(t => new DeletedTransportationDto
             {
                 ID = t.ID,
-                TransportationCompanyId = t.TransportationCompanyId,
-                CargoId = t.CargoId,
+                CargoId = t.CargoID,
                 VehicleId = t.VehicleId,
                 StartPoint = t.StartPoint,
                 EndPoint = t.EndPoint,
@@ -64,8 +62,7 @@ public class TransportationsController : ControllerBase
             .Select(t => new TransportationDto
             {
                 ID = t.ID,
-                TransportationCompanyId = t.TransportationCompanyId,
-                CargoId = t.CargoId,
+                CargoId = t.CargoID,
                 VehicleId = t.VehicleId,
                 StartPoint = t.StartPoint,
                 EndPoint = t.EndPoint
@@ -83,8 +80,7 @@ public class TransportationsController : ControllerBase
 
         var transportation = new Transportation
         {
-            TransportationCompanyId = dto.TransportationCompanyId,
-            CargoId = dto.CargoId,
+            CargoID = dto.CargoId,
             VehicleId = dto.VehicleId,
             StartPoint = dto.StartPoint,
             EndPoint = dto.EndPoint
@@ -101,8 +97,7 @@ public class TransportationsController : ControllerBase
         var existing = await _context.Transportations.FindAsync(id);
         if (existing == null || existing.IsDeleted) return NotFound();
 
-        existing.TransportationCompanyId = dto.TransportationCompanyId;
-        existing.CargoId = dto.CargoId;
+        existing.CargoID = dto.CargoId;
         existing.VehicleId = dto.VehicleId;
         existing.StartPoint = dto.StartPoint;
         existing.EndPoint = dto.EndPoint;
@@ -136,4 +131,5 @@ public class TransportationsController : ControllerBase
         await _context.SaveChangesAsync();
         return NoContent();
     }
+
 }

@@ -15,6 +15,7 @@ public class TransportationCompanyController : ControllerBase
         _context = context;
     }
 
+
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -92,6 +93,25 @@ public class TransportationCompanyController : ControllerBase
 
         await _context.SaveChangesAsync();
         return NoContent();
+    }
+
+    [HttpGet("deleted")]
+    public async Task<IActionResult> GetDeleted()
+    {
+        var deletedCompanies = await _context.TransportationCompany
+            .Where(c => c.IsDeleted)
+            .Select(c => new DeletedTransportationCompanyDto
+            {
+                ID = c.ID,
+                Name = c.Name,
+                Address = c.Address,
+                PhoneNumber = c.PhoneNumber,
+                IsDeleted = c.IsDeleted,
+                DeletedAt = c.DeletedAt
+            })
+            .ToListAsync();
+
+        return Ok(deletedCompanies);
     }
 
     [HttpPost("restore/{id}")]

@@ -16,6 +16,38 @@ namespace CCAPI.Controllers
             _context = context;
         }
 
+
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> GetByOrderId(int orderId)
+        {
+            var items = await _context.CargoOrders
+                .Where(co => co.OrderID == orderId)
+                .Select(co => new CargoOrdersDto
+                {
+                    OrderID = co.OrderID,
+                    CargoID = co.CargoID
+                })
+                .ToListAsync();
+
+            return Ok(items);
+        }
+
+        // POST /api/cargoorders
+        [HttpPost]
+        public async Task<IActionResult> Create(CargoOrdersDto dto)
+        {
+            var cargoOrder = new CargoOrders
+            {
+                OrderID = dto.OrderID,
+                CargoID = dto.CargoID
+            };
+
+            _context.CargoOrders.Add(cargoOrder);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         // GET /api/cargoorders
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -48,21 +80,6 @@ namespace CCAPI.Controllers
             };
 
             return Ok(dto);
-        }
-
-        // POST /api/cargoorders
-        [HttpPost]
-        public async Task<IActionResult> Create(CargoOrdersDto dto)
-        {
-            var link = new CargoOrders
-            {
-                CargoID = dto.CargoID,
-                OrderID = dto.OrderID
-            };
-
-            _context.CargoOrders.Add(link);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetByCompositeKey), new { cargoId = dto.CargoID, orderId = dto.OrderID }, dto);
         }
 
         // DELETE /api/cargoorders/5/10
