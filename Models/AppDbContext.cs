@@ -37,14 +37,14 @@ namespace CCAPI.Models
                 .HasForeignKey(o => o.IDClient)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // --- Связь: Order → Transportation (через Transid)
+            // --- Связь: Order → Transportation 
             modelBuilder.Entity<Orders>()
                 .HasOne(o => o.Transportation)
                 .WithOne()
                .HasForeignKey<Orders>(o => o.TransId)
                .OnDelete(DeleteBehavior.Restrict);
 
-            // --- Связь: Cargo ↔ Order (многие ко многим через CargoOrders)
+            // --- Связь: Cargo ↔ Order 
             modelBuilder.Entity<CargoOrders>()
                 .HasKey(co => new { co.CargoID, co.OrderID });
 

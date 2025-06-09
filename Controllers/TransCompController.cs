@@ -16,7 +16,6 @@ namespace CCAPI.Controllers
             _context = context;
         }
 
-        // GET /api/transcomp
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -31,7 +30,6 @@ namespace CCAPI.Controllers
             return Ok(links);
         }
 
-        // GET /api/transcomp/1/2
         [HttpGet("{transid}/{companyid}")]
         public async Task<IActionResult> GetByCompositeKey(int transid, int companyid)
         {
@@ -49,7 +47,6 @@ namespace CCAPI.Controllers
         }
 
 
-        // DELETE /api/transcomp/1/2
         [HttpDelete("{transId}/{companyId}")]
         public async Task<IActionResult> Delete(int transId, int companyId)
         {

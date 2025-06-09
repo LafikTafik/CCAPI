@@ -15,8 +15,6 @@ namespace CCAPI.Models
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeletedAt { get; set; }
 
-
-        // Многие ко многим: Cargo ↔ Orders через CargoOrders
         public ICollection<CargoOrders> Orders { get; set; } = new List<CargoOrders>();
 
 

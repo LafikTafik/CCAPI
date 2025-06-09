@@ -17,7 +17,6 @@ namespace CCAPI.Controllers
             _context = context;
         }
 
-        // GET: api/orders
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -37,7 +36,6 @@ namespace CCAPI.Controllers
             return Ok(orders);
         }
 
-        // GET: api/orders/deleted
         [HttpGet("deleted")]
         public async Task<IActionResult> GetDeleted()
         {
@@ -59,7 +57,6 @@ namespace CCAPI.Controllers
             return Ok(deletedOrders);
         }
 
-        // GET: api/orders/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -80,7 +77,6 @@ namespace CCAPI.Controllers
             return Ok(order);
         }
 
-        // POST: api/orders
         [HttpPost]
         public async Task<IActionResult> Create(OrderDto dto)
         {
@@ -100,7 +96,6 @@ namespace CCAPI.Controllers
             return CreatedAtAction(nameof(GetById), new { id = order.ID }, order);
         }
 
-        // PUT: api/orders/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, OrderDto dto)
         {
@@ -117,7 +112,6 @@ namespace CCAPI.Controllers
             return NoContent();
         }
 
-        // DELETE: api/orders/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -130,7 +124,6 @@ namespace CCAPI.Controllers
             return NoContent();
         }
 
-        // POST: api/orders/restore/{id}
         [HttpPost("restore/{id}")]
         public async Task<IActionResult> Restore(int id)
         {

@@ -63,7 +63,7 @@ namespace CCAPI.Controllers
             return Ok(links);
         }
 
-        // GET /api/cargoorders/5/10
+        // GET /api/cargoorders/
         [HttpGet("{cargoId}/{orderId}")]
         public async Task<IActionResult> GetByCompositeKey(int cargoId, int orderId)
         {
@@ -82,7 +82,7 @@ namespace CCAPI.Controllers
             return Ok(dto);
         }
 
-        // DELETE /api/cargoorders/5/10
+        // DELETE /api/cargoorders/
         [HttpDelete("{cargoId}/{orderId}")]
         public async Task<IActionResult> Delete(int cargoId, int orderId)
         {

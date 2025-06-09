@@ -14,7 +14,6 @@ namespace CCAPI.Models
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
 
-        // Навигационные свойства
         public ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();
         public ICollection<TransComp> TransComp { get; set; } = new List<TransComp>();
     }

@@ -18,13 +18,12 @@ namespace CCAPI.Models
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeletedAt { get; set; }
 
-        //[ForeignKey("Transid")]
+
         public Transportation Transportation { get; set; } = null!;
 
         [ForeignKey("IDClient")]
         public Client Client { get; set; } = null!;
 
-        // Многие ко многим: Order ↔ Cargo через CargoOrders
         public ICollection<CargoOrders> Cargos { get; set; } = new List<CargoOrders>();
     }
 }

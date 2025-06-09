@@ -16,12 +16,6 @@ namespace CCAPI.Models
         public bool IsDeleted { get; set; }
         public DateTime? DeletedAt { get; set; }
 
-
-        // Навигационные свойства
-        //[ForeignKey("ID")]
-        //public Orders Order { get; set; } = null!;
-
-        // Связь через Trans-Comp
         public ICollection<TransComp> TransComp { get; set; } = new List<TransComp>();
     }
 }

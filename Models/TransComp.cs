@@ -9,7 +9,6 @@ namespace CCAPI.Models
         public int TransportationID { get; set; }
         public int CompanyID { get; set; }
 
-        // Навигационные свойства
         [ForeignKey("TransportationID")]
         public Transportation Transportation { get; set; } = null!;
 
