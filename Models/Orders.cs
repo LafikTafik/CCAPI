@@ -8,7 +8,6 @@ namespace CCAPI.Models
     {
         [Key]
         public int ID { get; set; }
-
         public int TransId { get; set; } 
         public int? IDClient { get; set; }
         public DateTime? Date { get; set; }
@@ -20,10 +19,8 @@ namespace CCAPI.Models
 
 
         public Transportation Transportation { get; set; } = null!;
-
         [ForeignKey("IDClient")]
         public Client Client { get; set; } = null!;
-
         public ICollection<CargoOrders> Cargos { get; set; } = new List<CargoOrders>();
     }
 }

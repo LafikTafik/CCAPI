@@ -14,7 +14,7 @@ public class VehiclesController : ControllerBase
     {
         _context = context;
     }
-
+    //==================================================================================
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -33,7 +33,7 @@ public class VehiclesController : ControllerBase
 
         return Ok(vehicles);
     }
-
+    //==================================================================================
     [HttpGet("deleted")]
     public async Task<IActionResult> GetDeleted()
     {
@@ -54,7 +54,7 @@ public class VehiclesController : ControllerBase
 
         return Ok(deleted);
     }
-
+    //==================================================================================
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -74,7 +74,7 @@ public class VehiclesController : ControllerBase
         if (vehicle == null) return NotFound();
         return Ok(vehicle);
     }
-
+    //==================================================================================
     [HttpPost]
     public async Task<IActionResult> Create(VehicleDto dto)
     {
@@ -93,7 +93,7 @@ public class VehiclesController : ControllerBase
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetById), new { id = vehicle.ID }, vehicle);
     }
-
+    //==================================================================================
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, VehicleDto dto)
     {
@@ -109,7 +109,7 @@ public class VehiclesController : ControllerBase
         await _context.SaveChangesAsync();
         return NoContent();
     }
-
+    //==================================================================================
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -122,7 +122,7 @@ public class VehiclesController : ControllerBase
         await _context.SaveChangesAsync();
         return NoContent();
     }
-
+    //==================================================================================
     [HttpPost("restore/{id}")]
     public async Task<IActionResult> Restore(int id)
     {

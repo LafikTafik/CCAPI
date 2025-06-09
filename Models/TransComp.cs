@@ -5,7 +5,6 @@ namespace CCAPI.Models
 {
     public class TransComp
     {
- 
         public int TransportationID { get; set; }
         public int CompanyID { get; set; }
 

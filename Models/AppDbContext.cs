@@ -7,7 +7,6 @@ namespace CCAPI.Models
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
-
         public DbSet<Client> Clients { get; set; } = null!;
         public DbSet<Orders> Order { get; set; } = null!;
         public DbSet<Cargos> Cargo { get; set; } = null!;
@@ -18,33 +17,23 @@ namespace CCAPI.Models
         public DbSet<CargoOrders> CargoOrders { get; set; } = null!;
         public DbSet<TransportationCompany> TransportationCompany { get; set; } = null!;
 
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-            modelBuilder.Entity<Client>().ToTable("Clients");
-            modelBuilder.Entity<Orders>().ToTable("Order");
-            modelBuilder.Entity<Cargos>().ToTable("Cargo");
-            modelBuilder.Entity<Transportation>().ToTable("Transportations");
-            modelBuilder.Entity<Vehicle>().ToTable("Vehicle");
-            modelBuilder.Entity<Driver>().ToTable("Drivers");
-            modelBuilder.Entity<TransportationCompany>().ToTable("TransportationCompany");
-
-            // --- Связь: Client → Orders
+            // Client -> Orders
             modelBuilder.Entity<Orders>()
                 .HasOne(o => o.Client)
                 .WithMany(c => c.Orders)
                 .HasForeignKey(o => o.IDClient)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // --- Связь: Order → Transportation 
+            // Order -> Transportation 
             modelBuilder.Entity<Orders>()
                 .HasOne(o => o.Transportation)
                 .WithOne()
                .HasForeignKey<Orders>(o => o.TransId)
                .OnDelete(DeleteBehavior.Restrict);
 
-            // --- Связь: Cargo ↔ Order 
+            // Cargo <-> Order 
             modelBuilder.Entity<CargoOrders>()
                 .HasKey(co => new { co.CargoID, co.OrderID });
 
@@ -58,7 +47,7 @@ namespace CCAPI.Models
                 .WithMany(o => o.Cargos)
                 .HasForeignKey(co => co.OrderID);
 
-            // --- Связь: Transportation ↔ TransportationCompany через TransComp
+            // Transportation <-> TransportationCompany 
             modelBuilder.Entity<TransComp>()
                 .HasKey(tc => new { tc.TransportationID, tc.CompanyID });
 
@@ -72,7 +61,7 @@ namespace CCAPI.Models
                 .WithMany(c => c.TransComp)
                 .HasForeignKey(tc => tc.CompanyID);
 
-            // --- Связь: Vehicle → TransportationCompany
+            // Vehicle -> TransportationCompany
             modelBuilder.Entity<Vehicle>()
                 .HasOne(v => v.Company)
                 .WithMany(c => c.Vehicles)

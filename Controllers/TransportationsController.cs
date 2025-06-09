@@ -15,7 +15,7 @@ public class TransportationsController : ControllerBase
     {
         _context = context;
     }
-
+    //==================================================================================
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
@@ -33,7 +33,7 @@ public class TransportationsController : ControllerBase
 
         return Ok(transportations);
     }
-
+    //==================================================================================
     [HttpGet("deleted")]
     public async Task<IActionResult> GetDeleted()
     {
@@ -53,7 +53,7 @@ public class TransportationsController : ControllerBase
 
         return Ok(deleted);
     }
-
+    //==================================================================================
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
@@ -72,7 +72,7 @@ public class TransportationsController : ControllerBase
         if (transportation == null) return NotFound();
         return Ok(transportation);
     }
-
+    //==================================================================================
     [HttpPost]
     public async Task<IActionResult> Create(TransportationDto dto)
     {
@@ -90,7 +90,7 @@ public class TransportationsController : ControllerBase
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetById), new { id = transportation.ID }, transportation);
     }
-
+    //==================================================================================
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, TransportationDto dto)
     {
@@ -105,7 +105,7 @@ public class TransportationsController : ControllerBase
         await _context.SaveChangesAsync();
         return NoContent();
     }
-
+    //==================================================================================
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
@@ -118,7 +118,7 @@ public class TransportationsController : ControllerBase
         await _context.SaveChangesAsync();
         return NoContent();
     }
-
+    //==================================================================================
     [HttpPost("restore/{id}")]
     public async Task<IActionResult> Restore(int id)
     {

@@ -16,7 +16,7 @@ namespace CCAPI.Controllers
         {
             _context = context;
         }
-
+//==================================================================================
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -29,13 +29,13 @@ namespace CCAPI.Controllers
                     Surname = c.Surname,
                     Phone = c.Phone,
                     Email = c.Email,
-                    Address = c.Address,
+                    Adress = c.Adress,
                 })
                 .ToListAsync();
 
             return Ok(clients);
         }
-
+//==================================================================================
         [HttpGet("deleted")]
         public async Task<IActionResult> GetDeleted()
         {
@@ -48,7 +48,7 @@ namespace CCAPI.Controllers
                     Surname = c.Surname,
                     Phone = c.Phone,
                     Email = c.Email,
-                    Address = c.Address,
+                    Adress = c.Adress,
                     IsDeleted = c.IsDeleted,
                     DeletedAt = c.DeletedAt
                 })
@@ -56,7 +56,7 @@ namespace CCAPI.Controllers
 
             return Ok(deletedClients);
         }
-
+//==================================================================================
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -69,7 +69,7 @@ namespace CCAPI.Controllers
                     Surname = c.Surname,
                     Phone = c.Phone,
                     Email = c.Email,
-                    Address = c.Address,
+                    Adress = c.Adress,
 
                 })
                 .FirstOrDefaultAsync();
@@ -79,7 +79,7 @@ namespace CCAPI.Controllers
 
             return Ok(client);
         }
-
+//==================================================================================
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, ClientDto dto)
         {
@@ -95,15 +95,14 @@ namespace CCAPI.Controllers
             existingClient.Surname = dto.Surname;
             existingClient.Phone = dto.Phone;
             existingClient.Email = dto.Email;
-            existingClient.Address = dto.Address;
+            existingClient.Adress = dto.Adress;
 
             _context.Clients.Update(existingClient);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
-
-
+//==================================================================================
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -119,7 +118,7 @@ namespace CCAPI.Controllers
 
             return NoContent();
         }
-
+//==================================================================================
         [HttpPost]
         public async Task<IActionResult> Create(ClientDto dto)
         {
@@ -132,7 +131,7 @@ namespace CCAPI.Controllers
                 Surname = dto.Surname,
                 Phone = dto.Phone,
                 Email = dto.Email,
-                Address = dto.Address
+                Adress = dto.Adress
             };
 
             _context.Clients.Add(client);
@@ -140,7 +139,7 @@ namespace CCAPI.Controllers
 
             return CreatedAtAction(nameof(GetById), new { id = client.ID }, client);
         }
-
+//==================================================================================
         [HttpPost("restore/{id}")]
         public async Task<IActionResult> Restore(int id)
         {

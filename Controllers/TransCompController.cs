@@ -15,7 +15,7 @@ namespace CCAPI.Controllers
         {
             _context = context;
         }
-
+        //==================================================================================
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -29,7 +29,7 @@ namespace CCAPI.Controllers
 
             return Ok(links);
         }
-
+        //==================================================================================
         [HttpGet("{transid}/{companyid}")]
         public async Task<IActionResult> GetByCompositeKey(int transid, int companyid)
         {
@@ -45,7 +45,7 @@ namespace CCAPI.Controllers
                 CompanyID = link.CompanyID
             });
         }
-
+        //==================================================================================
 
         [HttpDelete("{transId}/{companyId}")]
         public async Task<IActionResult> Delete(int transId, int companyId)
@@ -60,7 +60,7 @@ namespace CCAPI.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
-    
+        //==================================================================================
         [HttpPost]
         public async Task<IActionResult> Create(TransCompDto dto)
         {
@@ -75,7 +75,7 @@ namespace CCAPI.Controllers
 
             return NoContent();
         }
-
+        //==================================================================================
         [HttpGet("{transportationId}")]
         public async Task<IActionResult> GetByTransportationId(int transportationId)
         {

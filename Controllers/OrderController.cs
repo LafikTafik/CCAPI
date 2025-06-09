@@ -16,7 +16,7 @@ namespace CCAPI.Controllers
         {
             _context = context;
         }
-
+        //==================================================================================
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -35,7 +35,7 @@ namespace CCAPI.Controllers
 
             return Ok(orders);
         }
-
+        //==================================================================================
         [HttpGet("deleted")]
         public async Task<IActionResult> GetDeleted()
         {
@@ -56,7 +56,7 @@ namespace CCAPI.Controllers
 
             return Ok(deletedOrders);
         }
-
+        //==================================================================================
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -76,7 +76,7 @@ namespace CCAPI.Controllers
             if (order == null) return NotFound();
             return Ok(order);
         }
-
+        //==================================================================================
         [HttpPost]
         public async Task<IActionResult> Create(OrderDto dto)
         {
@@ -95,7 +95,7 @@ namespace CCAPI.Controllers
             await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetById), new { id = order.ID }, order);
         }
-
+        //==================================================================================
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, OrderDto dto)
         {
@@ -111,7 +111,7 @@ namespace CCAPI.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
-
+        //==================================================================================
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -123,7 +123,7 @@ namespace CCAPI.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
-
+        //==================================================================================
         [HttpPost("restore/{id}")]
         public async Task<IActionResult> Restore(int id)
         {

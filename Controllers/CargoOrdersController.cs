@@ -16,7 +16,7 @@ namespace CCAPI.Controllers
             _context = context;
         }
 
-
+        //==================================================================================
         [HttpGet("{orderId}")]
         public async Task<IActionResult> GetByOrderId(int orderId)
         {
@@ -32,7 +32,7 @@ namespace CCAPI.Controllers
             return Ok(items);
         }
 
-        // POST /api/cargoorders
+        //==================================================================================
         [HttpPost]
         public async Task<IActionResult> Create(CargoOrdersDto dto)
         {
@@ -48,7 +48,7 @@ namespace CCAPI.Controllers
             return NoContent();
         }
 
-        // GET /api/cargoorders
+        //==================================================================================
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -63,7 +63,7 @@ namespace CCAPI.Controllers
             return Ok(links);
         }
 
-        // GET /api/cargoorders/
+        //==================================================================================
         [HttpGet("{cargoId}/{orderId}")]
         public async Task<IActionResult> GetByCompositeKey(int cargoId, int orderId)
         {
@@ -82,7 +82,7 @@ namespace CCAPI.Controllers
             return Ok(dto);
         }
 
-        // DELETE /api/cargoorders/
+        //==================================================================================
         [HttpDelete("{cargoId}/{orderId}")]
         public async Task<IActionResult> Delete(int cargoId, int orderId)
         {
